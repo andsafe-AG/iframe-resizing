@@ -152,10 +152,10 @@ describe('types', () => {
         },
       ];
 
-      expect(responses[0].payload).toBeNull();
-      expect(responses[1].payload).toEqual({ status: 'success' });
-      expect(responses[2].payload).toEqual(['array', 'data']);
-      expect(responses[3].payload).toBe('string payload');
+      expect(responses[0]?.payload).toBeNull();
+      expect(responses[1]?.payload).toEqual({ status: 'success' });
+      expect(responses[2]?.payload).toEqual(['array', 'data']);
+      expect(responses[3]?.payload).toBe('string payload');
     });
 
     it('should link response to command via correspondingCommandId', () => {
@@ -294,7 +294,7 @@ describe('types', () => {
       expect(resizeCommand.sender).toBe('child');
       expect(resizeCommand.receiver).toBe('parent');
       expect(resizeCommand.name).toBe('resize');
-      expect(resizeCommand.payload[0][0]).toBe(768);
+      expect(resizeCommand.payload[0]?.[0]).toBe(768);
 
       // Parent sends acknowledgment
       const acknowledgment: CommandResponse = {

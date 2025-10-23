@@ -136,9 +136,9 @@ describe('iframe-resizing', () => {
 
       expect(onError).toHaveBeenCalled();
 
-      const error = onError.mock.calls[0][0];
+      const error = onError.mock.calls[0]?.[0];
       expect(error).toBeInstanceOf(Error);
-      expect(error.message).toContain('Timeout exceeded');
+      expect(error?.message).toContain('Timeout exceeded');
 
       vi.useRealTimers();
     });
@@ -166,7 +166,7 @@ describe('iframe-resizing', () => {
 
       expect(captureError).toHaveBeenCalled();
 
-      const error = captureError.mock.calls[0][0];
+      const error = captureError.mock.calls[0]?.[0];
       expect(error).toBeInstanceOf(Error);
 
       vi.useRealTimers();
