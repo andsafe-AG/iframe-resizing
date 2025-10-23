@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Standalone iframe resizing script for applications with automatic height communication to parent windows",
   "type": "module",
+  "private": false,
   "main": "./dist/iframe-resizing.cjs",
   "module": "./dist/iframe-resizing.js",
   "types": "./dist/index.d.ts",
