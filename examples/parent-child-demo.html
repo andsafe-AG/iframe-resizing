@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parent-Child IFrame Demo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    h1 {
+      color: #333;
+      border-bottom: 3px solid #007bff;
+      padding-bottom: 10px;
+    }
+    .container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .section {
+      border: 2px solid #007bff;
+      border-radius: 8px;
+      padding: 20px;
+      background: #f9f9f9;
+    }
+    .section h2 {
+      margin-top: 0;
+      color: #007bff;
+    }
+    iframe {
+      width: 100%;
+      border: 3px solid #28a745;
+      border-radius: 8px;
+      background: white;
+      transition: height 0.3s ease;
+    }
+    .log {
+      background: #1e1e1e;
+      color: #00ff00;
+      padding: 15px;
+      border-radius: 5px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      max-height: 300px;
+      overflow-y: auto;
+      margin-top: 15px;
+    }
+    .log-entry {
+      margin: 5px 0;
+      padding: 3px 0;
+      border-bottom: 1px solid #333;
+    }
+    .log-entry.received {
+      color: #00ff00;
+    }
+    .log-entry.sent {
+      color: #00bfff;
+    }
+    .info {
+      background: #e7f3ff;
+      border-left: 4px solid #007bff;
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 15px;
+    }
+    .stat {
+      background: white;
+      padding: 15px;
+      border-radius: 5px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .stat-value {
+      font-size: 24px;
+      font-weight: bold;
+      color: #007bff;
+    }
+    .stat-label {
+      font-size: 12px;
+      color: #666;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Parent-Child IFrame Communication Demo</h1>
+
+  <div class="info">
+    <strong>How it works:</strong> This page acts as the parent window. The iframe below contains the child page (vanilla-js.html)
+    which automatically sends resize messages. The parent listens for these messages and adjusts the iframe height accordingly.
+  </div>
+
+  <div class="container">
+    <div class="section">
+      <h2>Child IFrame (vanilla-js.html)</h2>
+      <iframe
+        src="/examples/vanilla-js.html"
+        id="childFrame"
+        scrolling="no"
+      ></iframe>
+    </div>
+
+    <div class="section">
+      <h2>Parent Window - Message Log</h2>
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-value" id="messageCount">0</div>
+          <div class="stat-label">Messages Received</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" id="currentHeight">0</div>
+          <div class="stat-label">Current Height (px)</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" id="ackCount">0</div>
+          <div class="stat-label">ACKs Sent</div>
+        </div>
+      </div>
+      <div class="log" id="messageLog">
+        <div class="log-entry">Waiting for messages...</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const iframe = document.getElementById('childFrame');
+    const messageLog = document.getElementById('messageLog');
+    const messageCount = document.getElementById('messageCount');
+    const currentHeight = document.getElementById('currentHeight');
+    const ackCount = document.getElementById('ackCount');
+
+    let msgCount = 0;
+    let ackTotal = 0;
+
+    function addLogEntry(message, type = 'received') {
+      const entry = document.createElement('div');
+      entry.className = `log-entry ${type}`;
+      const timestamp = new Date().toLocaleTimeString();
+      entry.textContent = `[${timestamp}] ${message}`;
+      messageLog.appendChild(entry);
+      messageLog.scrollTop = messageLog.scrollHeight;
+
+      // Keep only last 50 entries
+      while (messageLog.children.length > 50) {
+        messageLog.removeChild(messageLog.firstChild);
+      }
+    }
+
+    // Listen for resize messages from the child iframe
+    window.addEventListener('message', (event) => {
+      // Filter only resize messages from child
+      if (event.data.name === 'resize' && event.data.sender === 'child') {
+        msgCount++;
+        const [height] = event.data.payload[0];
+
+        // Update iframe height
+        iframe.style.height = height + 'px';
+
+        // Update stats
+        messageCount.textContent = msgCount;
+        currentHeight.textContent = Math.round(height);
+
+        // Log the message
+        addLogEntry(
+          `📏 Resize request: ${Math.round(height)}px (ID: ${event.data.id.substring(0, 8)}...)`,
+          'received'
+        );
+
+        // Send acknowledgment back to child
+        const ackMessage = {
+          id: event.data.id,
+          sender: 'parent',
+          receiver: 'child',
+          correspondingCommandId: event.data.id
+        };
+
+        iframe.contentWindow.postMessage(ackMessage, '*');
+        ackTotal++;
+        ackCount.textContent = ackTotal;
+
+        addLogEntry(
+          `✅ ACK sent (ID: ${event.data.id.substring(0, 8)}...)`,
+          'sent'
+        );
+      }
+    });
+
+    // Initial log entry
+    addLogEntry('🚀 Parent window ready, listening for messages...', 'received');
+  </script>
+</body>
+</html>

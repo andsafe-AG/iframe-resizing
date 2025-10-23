@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IFrame Resizing - Vanilla JavaScript Example</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    .content-block {
+      background: #f4f4f4;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 5px;
+    }
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .status {
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      background: #d4edda;
+      color: #155724;
+    }
+  </style>
+</head>
+<body>
+  <h1>IFrame Resizing Example</h1>
+
+  <div class="status" id="status">
+    Initializing iframe resizing...
+  </div>
+
+  <div class="content-block">
+    <h2>Dynamic Content</h2>
+    <p>Click the buttons below to add or remove content. The iframe will automatically resize!</p>
+
+    <button onclick="addContent()">Add Content</button>
+    <button onclick="removeContent()">Remove Content</button>
+  </div>
+
+  <div id="dynamic-content"></div>
+
+  <!-- Load the library -->
+  <script type="module">
+    import { autoInitIFrameResizing } from '../dist/iframe-resizing.js';
+
+    // Initialize with error handling
+    const cleanup = autoInitIFrameResizing({
+      onError: (error) => {
+        console.error('Resize error:', error);
+        document.getElementById('status').innerHTML =
+          `<strong>Error:</strong> ${error.message}`;
+        document.getElementById('status').style.background = '#f8d7da';
+        document.getElementById('status').style.color = '#721c24';
+      }
+    });
+
+    // Store cleanup function globally for demo purposes
+    window.resizeCleanup = cleanup;
+
+    // Update status
+    document.getElementById('status').textContent =
+      'Iframe resizing is active! Try adding/removing content.';
+
+    // Make functions global for onclick handlers
+    window.addContent = function() {
+      const container = document.getElementById('dynamic-content');
+      const newBlock = document.createElement('div');
+      newBlock.className = 'content-block';
+      newBlock.innerHTML = `
+        <h3>Content Block ${Date.now()}</h3>
+        <p>This is dynamically added content. The iframe should automatically resize!</p>
+      `;
+      container.appendChild(newBlock);
+    };
+
+    window.removeContent = function() {
+      const container = document.getElementById('dynamic-content');
+      if (container.lastChild) {
+        container.removeChild(container.lastChild);
+      }
+    };
+
+    // Cleanup on unload
+    window.addEventListener('beforeunload', cleanup);
+  </script>
+</body>
+</html>

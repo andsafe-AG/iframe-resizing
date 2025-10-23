@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IFrame Test Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+    .container {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    }
+    h1 {
+      color: #333;
+      margin-top: 0;
+    }
+    .info-box {
+      background: #f0f8ff;
+      border-left: 4px solid #007bff;
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+    iframe {
+      width: 100%;
+      border: 3px solid #007bff;
+      border-radius: 8px;
+      transition: height 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .controls {
+      margin: 20px 0;
+      padding: 15px;
+      background: #f9f9f9;
+      border-radius: 8px;
+    }
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px;
+      font-size: 14px;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .status {
+      display: inline-block;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+    .status.active {
+      background: #28a745;
+      color: white;
+    }
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin: 20px 0;
+    }
+    .metric {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      border: 2px solid #e0e0e0;
+      text-align: center;
+    }
+    .metric-value {
+      font-size: 28px;
+      font-weight: bold;
+      color: #007bff;
+    }
+    .metric-label {
+      font-size: 14px;
+      color: #666;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>
+      IFrame Resize Test
+      <span class="status active" id="status">ACTIVE</span>
+    </h1>
+
+    <div class="info-box">
+      <strong>Test Instructions:</strong> The iframe below contains the vanilla-js.html example.
+      This parent page listens for resize messages and automatically adjusts the iframe height.
+      Try adding/removing content in the iframe using the buttons below.
+    </div>
+
+    <div class="metrics">
+      <div class="metric">
+        <div class="metric-value" id="heightDisplay">0</div>
+        <div class="metric-label">Current Height (px)</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value" id="resizeCount">0</div>
+        <div class="metric-label">Resize Events</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <strong>Quick Actions:</strong>
+      <button onclick="postMessageToChild('addContent')">📝 Add Content to Child</button>
+      <button onclick="postMessageToChild('removeContent')">🗑️ Remove Content from Child</button>
+      <button onclick="reloadIframe()">🔄 Reload IFrame</button>
+    </div>
+
+    <iframe
+      src="/examples/vanilla-js.html"
+      id="testFrame"
+      scrolling="no"
+    ></iframe>
+  </div>
+
+  <script>
+    const iframe = document.getElementById('testFrame');
+    const heightDisplay = document.getElementById('heightDisplay');
+    const resizeCount = document.getElementById('resizeCount');
+    const statusIndicator = document.getElementById('status');
+
+    let count = 0;
+
+    // Listen for resize messages
+    window.addEventListener('message', (event) => {
+      if (event.data.name === 'resize' && event.data.sender === 'child') {
+        count++;
+        const [height] = event.data.payload[0];
+
+        // Update iframe height with smooth transition
+        iframe.style.height = height + 'px';
+
+        // Update displays
+        heightDisplay.textContent = Math.round(height);
+        resizeCount.textContent = count;
+
+        // Flash the status indicator
+        statusIndicator.style.transform = 'scale(1.1)';
+        setTimeout(() => {
+          statusIndicator.style.transform = 'scale(1)';
+        }, 200);
+
+        // Send acknowledgment
+        iframe.contentWindow.postMessage({
+          id: event.data.id,
+          sender: 'parent',
+          receiver: 'child',
+          correspondingCommandId: event.data.id
+        }, '*');
+
+        console.log(`Resize event #${count}: ${Math.round(height)}px`);
+      }
+    });
+
+    // Helper function to send messages to the child iframe
+    function postMessageToChild(action) {
+      // This is a simple example - in reality, the child would need to listen for these messages
+      console.log(`Action: ${action}`);
+
+      // Instead, we'll directly manipulate by triggering clicks in the iframe
+      // This is just for demo purposes
+      if (action === 'addContent') {
+        iframe.contentWindow.postMessage({ action: 'addContent' }, '*');
+      } else if (action === 'removeContent') {
+        iframe.contentWindow.postMessage({ action: 'removeContent' }, '*');
+      }
+    }
+
+    function reloadIframe() {
+      count = 0;
+      resizeCount.textContent = '0';
+      heightDisplay.textContent = '0';
+      iframe.src = iframe.src;
+    }
+
+    // Add smooth transition
+    iframe.style.transition = 'height 0.3s ease';
+
+    console.log('Test page loaded. Listening for resize messages from iframe...');
+  </script>
+</body>
+</html>

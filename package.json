@@ -1,0 +1,79 @@
+{
+  "name": "@andsafe/iframe-resizing",
+  "version": "1.0.0",
+  "description": "Standalone iframe resizing script for applications with automatic height communication to parent windows",
+  "type": "module",
+  "main": "./dist/iframe-resizing.cjs",
+  "module": "./dist/iframe-resizing.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/iframe-resizing.js"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/iframe-resizing.cjs"
+      }
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "type-check": "tsc --noEmit",
+    "prepublishOnly": "npm run build",
+    "server": "node examples/server.js",
+    "server:dev": "nodemon examples/server.js",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "lint": "biome lint .",
+    "lint:fix": "biome lint --write .",
+    "format": "biome format .",
+    "format:fix": "biome format --write .",
+    "check": "biome check .",
+    "check:fix": "biome check --write .",
+    "ci:check": "biome ci ."
+  },
+  "keywords": [
+    "iframe",
+    "resize",
+    "resizing",
+    "postMessage",
+    "embed",
+    "responsive",
+    "height",
+    "communication",
+    "vanilla-js",
+    "typescript"
+  ],
+  "author": "andsafe AG",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/andsafe-AG/iframe-resizing"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.2.7",
+    "@types/uuid": "^10.0.0",
+    "@vitest/coverage-v8": "^4.0.1",
+    "@vitest/ui": "^4.0.1",
+    "express": "^4.18.2",
+    "happy-dom": "^20.0.8",
+    "nodemon": "^3.0.2",
+    "typescript": "^5.3.3",
+    "vite": "^6.4.1",
+    "vite-plugin-dts": "^4.5.4",
+    "vitest": "^4.0.1"
+  },
+  "dependencies": {
+    "uuid": "^9.0.1"
+  }
+}

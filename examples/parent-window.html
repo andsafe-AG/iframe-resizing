@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parent Window - IFrame Resizing Example</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1 {
+      color: #333;
+    }
+    .iframe-container {
+      border: 2px solid #007bff;
+      border-radius: 8px;
+      padding: 10px;
+      margin: 20px 0;
+      background: #f8f9fa;
+    }
+    iframe {
+      width: 100%;
+      border: 1px solid #dee2e6;
+      border-radius: 4px;
+      transition: height 0.3s ease;
+    }
+    .info {
+      background: #d1ecf1;
+      border-left: 4px solid #0c5460;
+      padding: 12px;
+      margin: 20px 0;
+      color: #0c5460;
+    }
+    .status {
+      font-family: monospace;
+      background: #e7f3ff;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Parent Window Example</h1>
+
+  <div class="info">
+    <strong>Info:</strong> This page demonstrates how a parent window handles resize messages from an embedded iframe.
+    Open the browser console to see the communication between parent and child.
+  </div>
+
+  <div class="status" id="status">
+    Waiting for resize messages...
+  </div>
+
+  <div class="iframe-container">
+    <h2>Embedded IFrame</h2>
+    <iframe id="child-iframe" src="vanilla-js.html"></iframe>
+  </div>
+
+  <script>
+    const iframe = document.getElementById('child-iframe');
+    const statusDiv = document.getElementById('status');
+    let messageCount = 0;
+
+    // Listen for resize messages from the iframe
+    window.addEventListener('message', (event) => {
+      console.log('Received message:', event.data);
+
+      const { name, payload, id, sender, receiver } = event.data;
+
+      // Handle resize command
+      if (name === 'resize' && sender === 'child') {
+        const height = payload[0][0];
+
+        console.log(`Resizing iframe to ${height}px`);
+
+        // Update iframe height
+        iframe.style.height = `${height}px`;
+
+        // Update status
+        messageCount++;
+        statusDiv.innerHTML = `
+          <strong>Resize #${messageCount}:</strong> Height set to ${height}px
+          <br><small>Command ID: ${id}</small>
+        `;
+
+        // Send acknowledgment back to child
+        const response = {
+          id: generateUUID(),
+          correspondingCommandId: id,
+          sender: 'parent',
+          receiver: 'child',
+          payload: undefined
+        };
+
+        console.log('Sending acknowledgment:', response);
+        event.source.postMessage(response, '*');
+      }
+    });
+
+    // Simple UUID generator
+    function generateUUID() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        const r = Math.random() * 16 | 0;
+        const v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+    }
+
+    // Log when iframe loads
+    iframe.addEventListener('load', () => {
+      console.log('IFrame loaded successfully');
+      statusDiv.innerHTML = '<strong>Status:</strong> IFrame loaded, waiting for resize messages...';
+    });
+  </script>
+</body>
+</html>
