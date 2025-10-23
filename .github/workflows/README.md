@@ -15,7 +15,7 @@ This directory contains GitHub Actions workflows for CI/CD automation.
 #### Test Job
 - **Matrix Strategy**: Tests across multiple environments
   - OS: Ubuntu, Windows, macOS
-  - Node.js: 18.x, 20.x, 22.x
+  - Node.js: 20.x, 22.x
 - **Steps:**
   1. Checkout code
   2. Setup Node.js with caching
@@ -39,11 +39,6 @@ This directory contains GitHub Actions workflows for CI/CD automation.
 - Analyzes bundle sizes
 - Reports sizes in GitHub summary
 - Shows both raw and gzipped sizes
-
-#### Dependency Review Job
-- Runs on pull requests only
-- Scans for vulnerable dependencies
-- Fails on moderate+ severity issues
 
 **Status Badge:**
 ```markdown
@@ -236,7 +231,6 @@ Add these badges to your README.md:
 
 1. **Different Node.js versions**: Test locally with all supported versions:
    ```bash
-   nvm use 18 && npm test
    nvm use 20 && npm test
    nvm use 22 && npm test
    ```
