@@ -60,10 +60,10 @@ You can use the library directly in the browser without a build tool:
 
 ```html
 <!-- From CDN (unpkg) -->
-<script src="https://unpkg.com/@andsafe/iframe-resizing@1.1.1/dist/iframe-resizing.umd.js"></script>
+<script src="https://unpkg.com/@andsafe/iframe-resizing@1.2.0/dist/iframe-resizing.umd.js"></script>
 
 <!-- Or from jsDelivr -->
-<script src="https://cdn.jsdelivr.net/npm/@andsafe/iframe-resizing@1.1.1/dist/iframe-resizing.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@andsafe/iframe-resizing@1.2.0/dist/iframe-resizing.umd.js"></script>
 
 <script>
   // The library is available globally as IFrameResizing
@@ -228,7 +228,7 @@ interface IFrameResizingOptions {
 ## How It Works
 
 1. **ResizeObserver** - Creates a ResizeObserver that monitors the document body for size changes
-2. **Size Detection** - When the body size changes, captures the new height via `contentRect`
+2. **Size Detection** - When the body size changes, captures the new height via `scrollHeight`
 3. **Message Passing** - Sends a `resize` command to the parent window using `postMessage`
 4. **Acknowledgment** - Waits for acknowledgment from the parent window (20-second timeout)
 5. **Error Handling** - Optionally calls error handlers if the resize fails
