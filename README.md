@@ -54,6 +54,34 @@ const { autoInitIFrameResizing } = require('@andsafe/iframe-resizing');
 const cleanup = autoInitIFrameResizing();
 ```
 
+### Browser (UMD)
+
+You can use the library directly in the browser without a build tool:
+
+```html
+<!-- From CDN (unpkg) -->
+<script src="https://unpkg.com/@andsafe/iframe-resizing@1.0.0/dist/iframe-resizing.umd.js"></script>
+
+<!-- Or from jsDelivr -->
+<script src="https://cdn.jsdelivr.net/npm/@andsafe/iframe-resizing@1.0.0/dist/iframe-resizing.umd.js"></script>
+
+<script>
+  // The library is available globally as IFrameResizing
+  const cleanup = IFrameResizing.autoInit();
+</script>
+```
+
+Or download and host the file yourself:
+
+```html
+<script src="path/to/iframe-resizing.umd.js"></script>
+<script>
+  const cleanup = IFrameResizing.autoInit({
+    onError: (error) => console.error(error)
+  });
+</script>
+```
+
 ## Usage
 
 ### Basic Usage

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browser Standalone Example - IFrame Resizing</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    h1 {
+      color: #333;
+      border-bottom: 2px solid #007bff;
+      padding-bottom: 10px;
+    }
+    .info {
+      background: #f8f9fa;
+      border-left: 4px solid #007bff;
+      padding: 15px;
+      margin: 20px 0;
+    }
+    .code {
+      background: #282c34;
+      color: #abb2bf;
+      padding: 15px;
+      border-radius: 5px;
+      overflow-x: auto;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-size: 14px;
+    }
+    .content {
+      background: #fff;
+      padding: 20px;
+      border: 1px solid #dee2e6;
+      border-radius: 5px;
+      margin: 20px 0;
+    }
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      margin: 5px;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    #status {
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+      display: none;
+    }
+    #status.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <h1>Browser Standalone Example</h1>
+
+  <div class="info">
+    <strong>ℹ️ Info:</strong> This page demonstrates using the UMD build directly in the browser.
+    The iframe resizing library is loaded via a script tag and available globally.
+  </div>
+
+  <div class="content">
+    <h2>Current Height: <span id="height">0</span>px</h2>
+    <p>This content will automatically notify the parent window about height changes.</p>
+
+    <button onclick="addContent()">Add Content</button>
+    <button onclick="removeContent()">Remove Content</button>
+
+    <div id="dynamic-content"></div>
+
+    <div id="status"></div>
+  </div>
+
+  <div class="content">
+    <h2>How to Use</h2>
+    <p>Include the UMD build in your HTML:</p>
+    <div class="code">
+&lt;script src="path/to/iframe-resizing.umd.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  // Option 1: Auto-init (recommended)
+  const cleanup = IFrameResizing.autoInit();
+
+  // Option 2: Manual init
+  // const cleanup = IFrameResizing.init({
+  //   onError: (error) =&gt; console.error(error)
+  // });
+&lt;/script&gt;
+    </div>
+  </div>
+
+  <div class="content">
+    <h2>CDN Usage (after npm publish)</h2>
+    <p>You can also load it from a CDN:</p>
+    <div class="code">
+&lt;!-- From unpkg --&gt;
+&lt;script src="https://unpkg.com/@andsafe/iframe-resizing@1.0.0/dist/iframe-resizing.umd.js"&gt;&lt;/script&gt;
+
+&lt;!-- From jsDelivr --&gt;
+&lt;script src="https://cdn.jsdelivr.net/npm/@andsafe/iframe-resizing@1.0.0/dist/iframe-resizing.umd.js"&gt;&lt;/script&gt;
+    </div>
+  </div>
+
+  <!-- Load the UMD build -->
+  <script src="../dist/iframe-resizing.umd.js"></script>
+
+  <script>
+    // Initialize iframe resizing with auto-init
+    const cleanup = IFrameResizing.autoInit({
+      onError: (error) => {
+        console.error('Resize error:', error);
+        showStatus('Error: ' + error.message, false);
+      }
+    });
+
+    // Track initial height
+    updateHeight();
+
+    // Helper functions for demo
+    let contentCounter = 0;
+
+    function addContent() {
+      contentCounter++;
+      const div = document.createElement('div');
+      div.style.cssText = 'padding: 15px; margin: 10px 0; background: #e7f3ff; border-radius: 4px;';
+      div.innerHTML = `
+        <strong>Dynamic Content #${contentCounter}</strong>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+      `;
+      document.getElementById('dynamic-content').appendChild(div);
+      showStatus('Content added! Height will auto-update.', true);
+      updateHeight();
+    }
+
+    function removeContent() {
+      const content = document.getElementById('dynamic-content');
+      if (content.lastChild) {
+        content.removeChild(content.lastChild);
+        showStatus('Content removed! Height will auto-update.', true);
+        updateHeight();
+      }
+    }
+
+    function updateHeight() {
+      setTimeout(() => {
+        document.getElementById('height').textContent = document.body.scrollHeight;
+      }, 100);
+    }
+
+    function showStatus(message, isSuccess) {
+      const status = document.getElementById('status');
+      status.textContent = message;
+      status.className = isSuccess ? 'success' : 'error';
+      setTimeout(() => {
+        status.style.display = 'none';
+      }, 3000);
+    }
+
+    // Cleanup on page unload (optional)
+    window.addEventListener('beforeunload', cleanup);
+
+    console.log('✅ IFrame Resizing initialized!');
+    console.log('Global object available:', typeof IFrameResizing !== 'undefined');
+  </script>
+</body>
+</html>

@@ -41,6 +41,18 @@ describe('iframe-resizing', () => {
       postMessage: vi.fn(),
     } as any;
 
+    // Mock iframe detection - simulate running in iframe
+    Object.defineProperty(window, 'self', {
+      value: window,
+      writable: true,
+      configurable: true,
+    });
+    Object.defineProperty(window, 'top', {
+      value: {}, // Different from window.self, so isInIframe() returns true
+      writable: true,
+      configurable: true,
+    });
+
     // Setup document body
     document.body.innerHTML = '<div>Test content</div>';
 

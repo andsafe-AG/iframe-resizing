@@ -14,10 +14,11 @@ export default defineConfig({
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
       name: 'IFrameResizing',
-      formats: ['es', 'cjs'],
+      formats: ['es', 'cjs', 'umd'],
       fileName: (format) => {
         if (format === 'es') return 'iframe-resizing.js';
         if (format === 'cjs') return 'iframe-resizing.cjs';
+        if (format === 'umd') return 'iframe-resizing.umd.js';
         return `iframe-resizing.${format}.js`;
       },
     },
