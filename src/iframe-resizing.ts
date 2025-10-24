@@ -61,6 +61,20 @@ function isServerSide(): boolean {
 }
 
 /**
+ * Checks if code is running inside an iframe
+ * @returns true if running inside an iframe
+ * @internal
+ */
+function isInIframe(): boolean {
+  try {
+    return window.self !== window.top;
+  } catch (e) {
+    // Cross-origin access throws error, but that means we're in an iframe
+    return true;
+  }
+}
+
+/**
  * Initializes iframe resizing functionality
  *
  * This function sets up a ResizeObserver on the document body that automatically
@@ -91,6 +105,11 @@ export function initIFrameResizing(options: IFrameResizingOptions = {}): () => v
 
   if (isServerSide()) {
     console.warn('initIFrameResizing: Cannot initialize on server side');
+    return () => {};
+  }
+
+  if (!isInIframe()) {
+    console.warn('initIFrameResizing: Not running in an iframe, skipping initialization');
     return () => {};
   }
 

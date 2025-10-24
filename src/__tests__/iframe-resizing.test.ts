@@ -41,6 +41,18 @@ describe('iframe-resizing', () => {
       postMessage: vi.fn(),
     } as any;
 
+    // Mock iframe detection - simulate running in iframe
+    Object.defineProperty(window, 'self', {
+      value: window,
+      writable: true,
+      configurable: true,
+    });
+    Object.defineProperty(window, 'top', {
+      value: {}, // Different from window.self, so isInIframe() returns true
+      writable: true,
+      configurable: true,
+    });
+
     // Setup document body
     document.body.innerHTML = '<div>Test content</div>';
 
@@ -272,6 +284,42 @@ describe('iframe-resizing', () => {
 
       // Restore window
       global.window = originalWindow;
+    });
+
+    it('should return noop function when not running in iframe', () => {
+      // Mock non-iframe environment (window.self === window.top)
+      Object.defineProperty(window, 'top', {
+        value: window.self,
+        writable: true,
+        configurable: true,
+      });
+
+      const consoleWarnSpy = vi.spyOn(console, 'warn');
+
+      const cleanup = initIFrameResizing();
+
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        'initIFrameResizing: Not running in an iframe, skipping initialization',
+      );
+      expect(typeof cleanup).toBe('function');
+      expect(() => cleanup()).not.toThrow();
+      expect(observedElements).toHaveLength(0); // No observer created
+    });
+
+    it('should detect iframe with cross-origin exception', () => {
+      // Mock cross-origin iframe (accessing window.top throws)
+      Object.defineProperty(window, 'top', {
+        get: () => {
+          throw new Error('Cross-origin access denied');
+        },
+        configurable: true,
+      });
+
+      // Should still initialize because the error means we're in an iframe
+      const cleanup = initIFrameResizing();
+
+      expect(observedElements).toHaveLength(1); // Observer was created
+      expect(typeof cleanup).toBe('function');
     });
   });
 
