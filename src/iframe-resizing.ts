@@ -117,9 +117,9 @@ export function initIFrameResizing(options: IFrameResizingOptions = {}): () => v
     const entry = entries[0];
     if (!entry) return;
 
-    const { contentRect } = entry;
+    const { target } = entry;
 
-    sendResizeCommand(contentRect.height).catch((error) => {
+    sendResizeCommand(target.scrollHeight).catch((error) => {
       console.warn(error.message);
 
       if (onError) {
