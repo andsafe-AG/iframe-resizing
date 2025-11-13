@@ -53,8 +53,8 @@ describe('iframe-resizing', () => {
       configurable: true,
     });
 
-    // Setup document body
-    document.body.innerHTML = '<div>Test content</div>';
+    // Setup document documentElement
+    document.documentElement.innerHTML = '<div>Test content</div>';
 
     // Clear any existing event listeners
     vi.clearAllMocks();
@@ -66,11 +66,11 @@ describe('iframe-resizing', () => {
   });
 
   describe('initIFrameResizing', () => {
-    it('should initialize ResizeObserver on document body', () => {
+    it('should initialize ResizeObserver on document documentElement', () => {
       const cleanup = initIFrameResizing();
 
       expect(observedElements).toHaveLength(1);
-      expect(observedElements[0]).toBe(document.body);
+      expect(observedElements[0]).toBe(document.documentElement);
       expect(typeof cleanup).toBe('function');
     });
 
@@ -84,18 +84,12 @@ describe('iframe-resizing', () => {
       expect(observedElements).toHaveLength(0);
     });
 
-    it('should send resize command when body size changes', async () => {
+    it('should send resize command when documentElement size changes', async () => {
       initIFrameResizing();
-
-      // Mock scrollHeight on document.body
-      Object.defineProperty(document.body, 'scrollHeight', {
-        value: 500,
-        configurable: true,
-      });
 
       // Simulate resize event
       const mockEntry: ResizeObserverEntry = {
-        target: document.body,
+        target: document.documentElement,
         contentRect: {
           height: 500,
           width: 800,
@@ -137,7 +131,7 @@ describe('iframe-resizing', () => {
 
       // Simulate resize event
       const mockEntry: ResizeObserverEntry = {
-        target: document.body,
+        target: document.documentElement,
         contentRect: { height: 500 } as DOMRectReadOnly,
         borderBoxSize: [] as any,
         contentBoxSize: [] as any,
@@ -169,7 +163,7 @@ describe('iframe-resizing', () => {
 
       // Simulate resize event
       const mockEntry: ResizeObserverEntry = {
-        target: document.body,
+        target: document.documentElement,
         contentRect: { height: 500 } as DOMRectReadOnly,
         borderBoxSize: [] as any,
         contentBoxSize: [] as any,
@@ -190,23 +184,25 @@ describe('iframe-resizing', () => {
       vi.useRealTimers();
     });
 
-    it('should warn when document body is not found', () => {
+    it('should warn when document documentElement is not found', () => {
       const consoleWarnSpy = vi.spyOn(console, 'warn');
 
-      // Remove body
-      const originalBody = document.body;
-      Object.defineProperty(document, 'body', {
+      // Remove documentElement
+      const originaldocumentElement = document.documentElement;
+      Object.defineProperty(document, 'documentElement', {
         get: () => null,
         configurable: true,
       });
 
       initIFrameResizing();
 
-      expect(consoleWarnSpy).toHaveBeenCalledWith('initIFrameResizing: Document body not found');
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        'initIFrameResizing: Document documentElement not found',
+      );
 
-      // Restore body
-      Object.defineProperty(document, 'body', {
-        get: () => originalBody,
+      // Restore documentElement
+      Object.defineProperty(document, 'documentElement', {
+        get: () => originaldocumentElement,
         configurable: true,
       });
     });
@@ -236,7 +232,7 @@ describe('iframe-resizing', () => {
 
       // Simulate resize event
       const mockEntry: ResizeObserverEntry = {
-        target: document.body,
+        target: document.documentElement,
         contentRect: { height: 500 } as DOMRectReadOnly,
         borderBoxSize: [] as any,
         contentBoxSize: [] as any,
@@ -341,7 +337,7 @@ describe('iframe-resizing', () => {
       const cleanup = autoInitIFrameResizing();
 
       expect(observedElements).toHaveLength(1);
-      expect(observedElements[0]).toBe(document.body);
+      expect(observedElements[0]).toBe(document.documentElement);
       expect(typeof cleanup).toBe('function');
     });
 
@@ -481,7 +477,7 @@ describe('iframe-resizing', () => {
       initIFrameResizing();
 
       const mockEntry: ResizeObserverEntry = {
-        target: document.body,
+        target: document.documentElement,
         contentRect: { height: 600 } as DOMRectReadOnly,
         borderBoxSize: [] as any,
         contentBoxSize: [] as any,
@@ -511,7 +507,7 @@ describe('iframe-resizing', () => {
       initIFrameResizing();
 
       const mockEntry: ResizeObserverEntry = {
-        target: document.body,
+        target: document.documentElement,
         contentRect: { height: 600 } as DOMRectReadOnly,
         borderBoxSize: [] as any,
         contentBoxSize: [] as any,
@@ -536,14 +532,8 @@ describe('iframe-resizing', () => {
       const heights = [100, 200, 300, 400, 500];
 
       for (const height of heights) {
-        // Mock scrollHeight for each height value
-        Object.defineProperty(document.body, 'scrollHeight', {
-          value: height,
-          configurable: true,
-        });
-
         const mockEntry: ResizeObserverEntry = {
-          target: document.body,
+          target: document.documentElement,
           contentRect: { height } as DOMRectReadOnly,
           borderBoxSize: [] as any,
           contentBoxSize: [] as any,
@@ -567,14 +557,8 @@ describe('iframe-resizing', () => {
     it('should handle zero height', async () => {
       initIFrameResizing();
 
-      // Mock scrollHeight on document.body
-      Object.defineProperty(document.body, 'scrollHeight', {
-        value: 0,
-        configurable: true,
-      });
-
       const mockEntry: ResizeObserverEntry = {
-        target: document.body,
+        target: document.documentElement,
         contentRect: { height: 0 } as DOMRectReadOnly,
         borderBoxSize: [] as any,
         contentBoxSize: [] as any,
@@ -595,15 +579,8 @@ describe('iframe-resizing', () => {
       initIFrameResizing();
 
       const largeHeight = 999999;
-
-      // Mock scrollHeight on document.body
-      Object.defineProperty(document.body, 'scrollHeight', {
-        value: largeHeight,
-        configurable: true,
-      });
-
       const mockEntry: ResizeObserverEntry = {
-        target: document.body,
+        target: document.documentElement,
         contentRect: { height: largeHeight } as DOMRectReadOnly,
         borderBoxSize: [] as any,
         contentBoxSize: [] as any,
@@ -624,15 +601,8 @@ describe('iframe-resizing', () => {
       initIFrameResizing();
 
       const fractionalHeight = 123.456;
-
-      // Mock scrollHeight on document.body
-      Object.defineProperty(document.body, 'scrollHeight', {
-        value: fractionalHeight,
-        configurable: true,
-      });
-
       const mockEntry: ResizeObserverEntry = {
-        target: document.body,
+        target: document.documentElement,
         contentRect: { height: fractionalHeight } as DOMRectReadOnly,
         borderBoxSize: [] as any,
         contentBoxSize: [] as any,
