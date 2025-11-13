@@ -196,7 +196,9 @@ describe('iframe-resizing', () => {
 
       initIFrameResizing();
 
-      expect(consoleWarnSpy).toHaveBeenCalledWith('initIFrameResizing: Document documentElement not found');
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        'initIFrameResizing: Document documentElement not found',
+      );
 
       // Restore documentElement
       Object.defineProperty(document, 'documentElement', {
