@@ -87,12 +87,6 @@ describe('iframe-resizing', () => {
     it('should send resize command when body size changes', async () => {
       initIFrameResizing();
 
-      // Mock scrollHeight on document.body
-      Object.defineProperty(document.body, 'scrollHeight', {
-        value: 500,
-        configurable: true,
-      });
-
       // Simulate resize event
       const mockEntry: ResizeObserverEntry = {
         target: document.body,
@@ -536,12 +530,6 @@ describe('iframe-resizing', () => {
       const heights = [100, 200, 300, 400, 500];
 
       for (const height of heights) {
-        // Mock scrollHeight for each height value
-        Object.defineProperty(document.body, 'scrollHeight', {
-          value: height,
-          configurable: true,
-        });
-
         const mockEntry: ResizeObserverEntry = {
           target: document.body,
           contentRect: { height } as DOMRectReadOnly,
@@ -567,12 +555,6 @@ describe('iframe-resizing', () => {
     it('should handle zero height', async () => {
       initIFrameResizing();
 
-      // Mock scrollHeight on document.body
-      Object.defineProperty(document.body, 'scrollHeight', {
-        value: 0,
-        configurable: true,
-      });
-
       const mockEntry: ResizeObserverEntry = {
         target: document.body,
         contentRect: { height: 0 } as DOMRectReadOnly,
@@ -595,13 +577,6 @@ describe('iframe-resizing', () => {
       initIFrameResizing();
 
       const largeHeight = 999999;
-
-      // Mock scrollHeight on document.body
-      Object.defineProperty(document.body, 'scrollHeight', {
-        value: largeHeight,
-        configurable: true,
-      });
-
       const mockEntry: ResizeObserverEntry = {
         target: document.body,
         contentRect: { height: largeHeight } as DOMRectReadOnly,
@@ -624,13 +599,6 @@ describe('iframe-resizing', () => {
       initIFrameResizing();
 
       const fractionalHeight = 123.456;
-
-      // Mock scrollHeight on document.body
-      Object.defineProperty(document.body, 'scrollHeight', {
-        value: fractionalHeight,
-        configurable: true,
-      });
-
       const mockEntry: ResizeObserverEntry = {
         target: document.body,
         contentRect: { height: fractionalHeight } as DOMRectReadOnly,
