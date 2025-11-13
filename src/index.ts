@@ -3,7 +3,7 @@
  * IFrame Resizing - Standalone iframe height resizing for applications
  *
  * This package provides automatic iframe height resizing functionality by monitoring
- * the document body and communicating size changes to the parent window.
+ * the documentElement and communicating size changes to the parent window.
  */
 
 export { autoInitIFrameResizing, initIFrameResizing } from './iframe-resizing';

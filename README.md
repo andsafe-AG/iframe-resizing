@@ -179,7 +179,7 @@ Initializes iframe resizing **immediately**. The DOM **must be ready** before ca
 
 **Behavior:**
 - ⚠️ **Immediate initialization**: No DOM ready check
-- ⚠️ **Assumes body exists**: Will log warning if `document.body` is not available
+- ⚠️ **Assumes documentElement exists**: Will log warning if `document.documentElement` is not available
 - ⚠️ **Timing matters**: Must be called after DOM is loaded
 
 **When to use:**
@@ -227,8 +227,8 @@ interface IFrameResizingOptions {
 
 ## How It Works
 
-1. **ResizeObserver** - Creates a ResizeObserver that monitors the document body for size changes
-2. **Size Detection** - When the body size changes, captures the new height via `contentRect`
+1. **ResizeObserver** - Creates a ResizeObserver that monitors the document documentElement for size changes
+2. **Size Detection** - When the documentElement size changes, captures the new height via `contentRect`
 3. **Message Passing** - Sends a `resize` command to the parent window using `postMessage`
 4. **Acknowledgment** - Waits for acknowledgment from the parent window (20-second timeout)
 5. **Error Handling** - Optionally calls error handlers if the resize fails
@@ -321,7 +321,7 @@ autoInitIFrameResizing();
 function addContent() {
   const element = document.createElement('div');
   element.textContent = 'New content';
-  document.body.appendChild(element);
+  document.documentElement.appendChild(element);
   // Resize happens automatically!
 }
 ```

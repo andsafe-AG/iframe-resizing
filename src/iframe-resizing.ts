@@ -2,7 +2,7 @@
  * Standalone iframe resizing script for applications
  *
  * This script provides automatic iframe height resizing functionality by monitoring
- * the document body and communicating size changes to the parent window via postMessage.
+ * the document documentElement and communicating size changes to the parent window via postMessage.
  *
  * @packageDocumentation
  */
@@ -68,7 +68,7 @@ function isServerSide(): boolean {
 function isInIframe(): boolean {
   try {
     return window.self !== window.top;
-  } catch (e) {
+  } catch (_e) {
     // Cross-origin access throws error, but that means we're in an iframe
     return true;
   }
@@ -77,7 +77,7 @@ function isInIframe(): boolean {
 /**
  * Initializes iframe resizing functionality
  *
- * This function sets up a ResizeObserver on the document body that automatically
+ * This function sets up a ResizeObserver on the document documentElement that automatically
  * communicates size changes to the parent window via postMessage.
  *
  * @param options - Configuration options
@@ -132,12 +132,12 @@ export function initIFrameResizing(options: IFrameResizingOptions = {}): () => v
     });
   });
 
-  const { body } = document;
+  const { documentElement } = document;
 
-  if (body) {
-    observer.observe(body);
+  if (documentElement) {
+    observer.observe(documentElement);
   } else {
-    console.warn('initIFrameResizing: Document body not found');
+    console.warn('initIFrameResizing: Document documentElement not found');
   }
 
   // Return cleanup function
