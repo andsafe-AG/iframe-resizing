@@ -1,5 +1,6 @@
 /**
  * Participant types in iframe communication
+ * @deprecated Use `@andsafe/iframe-messaging` instead. See https://www.npmjs.com/package/@andsafe/iframe-messaging
  */
 export const participants = {
   PARENT: 'parent',
@@ -10,6 +11,7 @@ export type Participant = (typeof participants)[keyof typeof participants];
 
 /**
  * Command structure for iframe messaging
+ * @deprecated Use `@andsafe/iframe-messaging` instead. See https://www.npmjs.com/package/@andsafe/iframe-messaging
  */
 export interface Command {
   id: string;
@@ -21,6 +23,7 @@ export interface Command {
 
 /**
  * Command response structure
+ * @deprecated Use `@andsafe/iframe-messaging` instead. See https://www.npmjs.com/package/@andsafe/iframe-messaging
  */
 export interface CommandResponse {
   id: string;
@@ -32,6 +35,7 @@ export interface CommandResponse {
 
 /**
  * Configuration options for iframe resizing
+ * @deprecated Use `@andsafe/iframe-messaging` instead. See https://www.npmjs.com/package/@andsafe/iframe-messaging
  */
 export interface IFrameResizingOptions {
   /**

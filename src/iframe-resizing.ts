@@ -98,7 +98,7 @@ function isInIframe(): boolean {
  * cleanup();
  * ```
  *
- * @public
+ * @deprecated Use `@andsafe/iframe-messaging` instead. See https://www.npmjs.com/package/@andsafe/iframe-messaging
  */
 export function initIFrameResizing(options: IFrameResizingOptions = {}): () => void {
   const { onError, captureError, heightCalculationMethod = 'contentRect' } = options;
@@ -172,7 +172,7 @@ export function initIFrameResizing(options: IFrameResizingOptions = {}): () => v
  * const cleanup = autoInitIFrameResizing();
  * ```
  *
- * @public
+ * @deprecated Use `@andsafe/iframe-messaging` instead. See https://www.npmjs.com/package/@andsafe/iframe-messaging
  */
 export function autoInitIFrameResizing(options: IFrameResizingOptions = {}): () => void {
   if (isServerSide()) {

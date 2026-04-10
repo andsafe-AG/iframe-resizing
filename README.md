@@ -1,5 +1,12 @@
 # @andsafe/iframe-resizing
 
+> [!WARNING]
+> **This package is deprecated and no longer maintained.**
+>
+> Please migrate to [`@andsafe/iframe-messaging`](https://www.npmjs.com/package/@andsafe/iframe-messaging), which provides generic, bidirectional `postMessage` communication between iframes and parent windows — not just height reporting.
+>
+> This package only handled one narrow use case (pushing the iframe's current size to the parent). The new package covers the same use case and much more.
+
 A lightweight, framework-agnostic library for automatic iframe height resizing. Perfect for embedded applications that need to communicate their size to parent windows.
 
 [![npm version](https://img.shields.io/npm/v/@andsafe/iframe-resizing.svg)](https://www.npmjs.com/package/@andsafe/iframe-resizing)

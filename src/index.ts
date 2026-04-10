@@ -2,8 +2,12 @@
  * @packageDocumentation
  * IFrame Resizing - Standalone iframe height resizing for applications
  *
- * This package provides automatic iframe height resizing functionality by monitoring
- * the documentElement and communicating size changes to the parent window.
+ * @deprecated This package is deprecated. Please migrate to `@andsafe/iframe-messaging`
+ * (https://www.npmjs.com/package/@andsafe/iframe-messaging), which provides generic
+ * bidirectional postMessage communication between iframes and parent windows.
+ *
+ * This package only reported iframe size to the parent window. The new package covers
+ * the same use case and much more.
  */
 
 export { autoInitIFrameResizing, initIFrameResizing } from './iframe-resizing';
